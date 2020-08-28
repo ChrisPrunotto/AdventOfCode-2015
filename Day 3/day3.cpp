@@ -3,18 +3,17 @@
 #include <vector>
 #include <map>
 #include <utility>
+#include "day3_funcs.h"
 
 using namespace std;
 
 int main(){
     vector<char> input;
     char inputChar;
-    std::pair<int, int> coordPair;
+    std::pair<int, int> santaCoordPair = {0,0}, roboSantaCoordPair = {0,0};
     map<pair<int, int>, int> coordinateGrid;
 
-    int xPos = 0, yPos = 0;
-    coordPair.first = xPos;
-    coordPair.second = yPos;
+    bool bSantasTurn = true; //true = Santa's turn, false = robo-Santa's turn
 
     //read the file
     std::ifstream file("input.txt");
@@ -23,45 +22,68 @@ int main(){
         input.push_back(inputChar);
     }
     
-    //Santa drops his first gift at 0,0.
-    coordinateGrid.insert({coordPair,1});
-    std::cout << "Current Coordinates: (" << xPos << ", " << yPos << "). Presents: " << coordinateGrid[{coordPair}] << std::endl;
-
+    //Santa drops his first gift at 0,0., as per problem description.
+    bSantasTurn = true;
+    dropPresent(bSantasTurn, santaCoordPair, roboSantaCoordPair, coordinateGrid);
+    //RoboSanta drop his first gift at 0,0, as per problem description.
+    bSantasTurn = false;
+    dropPresent(bSantasTurn, santaCoordPair, roboSantaCoordPair, coordinateGrid);
+ 
     for (int i=0;i<input.size();i++)
     {
+        if (i % 2 == 0)
+        {
+            bSantasTurn = true; //Santa's Turn
+        }
+        else
+        {
+            bSantasTurn = false; //RoboSanta's Turn
+        }
+
         //move
         switch(input[i]){
         case '^':
-            yPos++;
+            if(bSantasTurn){
+                santaCoordPair.second++;
+            }
+            else {
+                roboSantaCoordPair.second++;
+            }
             break;
         case '>':
-            xPos++;
+            if(bSantasTurn){
+                santaCoordPair.first++;
+            }
+            else {
+                roboSantaCoordPair.first++;
+            }
             break;
         case 'v':
-            yPos--;
+            if(bSantasTurn){
+                santaCoordPair.second--;
+            }
+            else {
+                roboSantaCoordPair.second--;
+            }
             break;
         case '<':
-            xPos--;
+            if(bSantasTurn){
+                santaCoordPair.first--;
+            }
+            else {
+                roboSantaCoordPair.first--;
+            }
             break;
         default:
             cerr << "\nError! Unhandled input at " << i << "!";
             break;
         }
 
-        coordPair.first = xPos;
-        coordPair.second = yPos;
-        
-        if (coordinateGrid.find({coordPair}) == coordinateGrid.end()){
-            coordinateGrid.insert({coordPair,1});
-        }
-        else {
-            coordinateGrid[{coordPair}] +=1;
-        }
-        std::cout << "Current Coordinates: (" << xPos << ", " << yPos << "). Presents: " << coordinateGrid[{coordPair}] << std::endl;
-    }
+        //drop presents
+        dropPresent(bSantasTurn, santaCoordPair, roboSantaCoordPair, coordinateGrid);
 
-    std::cout << "\nSanta is now at: (" << xPos << ", " << yPos << ")." << endl;
-    std::cout << "Santa has visited: " << coordinateGrid.size() << " houses.";
+    }
+    std::cout << endl << coordinateGrid.size() << " total houses.";
 }
 
 
@@ -76,5 +98,13 @@ int main(){
             ++I learned about maps and pairs, and learned that I can use a pair in a map to represent a 2D array with an attached value to each key, rather than using a vector of vectors to create an array.
 
         -- I wrote the file-reading statements essentially from memory which was great.
+        -- I can just put the instructions in the "readme" file instead of a file named "Instructions" and they'll display more elegantly on Github!
+
+        -- Be super careful when copying any line of code. When breaking up the "coordinatepair" variable into "SantaPos" and "RoboSantaPos" to independently store each Santa's position, I copy-pasted and wound up flipping things weirdly. Don't shortcut! Just type.
+
+        -- By creating a function called dropPresent and "Passing Arguments By Reference", I was able to very neatly and cleanly traverse the input and have the santas drop presents correctly, from a single line of code!
+
         The correct answer to this puzzle was: 2592 houses.
+        The correct answer to part two was 2,360 houses.
+
  */
