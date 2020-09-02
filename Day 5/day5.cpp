@@ -53,23 +53,46 @@ int countVowels(string inputString){
     return numVowels;
 }
 
+int checkforDoublePairs(string inputString){
+    int doublePairsFlag = 0;
+
+    //for (vector<regex>::iterator it = badStrings.begin(); it != badStrings.end(); it++) {
+    if (regex_match(inputString, regex("")))
+    {
+        if (regex_match(inputLine, badString)) {
+            badStringFlag = 1;
+            break;
+        }
+    }
+    
+    return doublePairsFlag;
+
+}
+
+int checkForXyXFlag(string inputString){
+    int XyXFlag = 0;
+
+    return XyXFlag;
+}
+
 int main(){
     string inputLine;
     ifstream file("input.txt");
 
     int nice = 0;
 
-    vector<regex> badStrings;
+
+/*     vector<regex> badStrings;
     badStrings.push_back(regex("^(.*)(ab)(.*)$")); //regex rules defined by the problem.
     badStrings.push_back(regex("^(.*)(cd)(.*)$")); //regex rules defined by the problem.
     badStrings.push_back(regex("^(.*)(pq)(.*)$")); //regex rules defined by the problem.
-    badStrings.push_back(regex("^(.*)(xy)(.*)$")); //regex rules defined by the problem.
+    badStrings.push_back(regex("^(.*)(xy)(.*)$")); //regex rules defined by the problem. */
 
     while (getline(file, inputLine))
     {
         std::cout << "Checking...: " << inputLine;
 
-        //check for bad strings first
+/*         //check for bad strings first
         int badStringFlag = 0;
         for (vector<regex>::iterator it = badStrings.begin(); it != badStrings.end(); it++) {
             regex badString = *it;
@@ -78,8 +101,9 @@ int main(){
                 break;
             }
         }
-
-        if ((badStringFlag == 0) && (checkForDoubleLetters(inputLine) == 1) && (countVowels(inputLine) >= 3))
+ */
+        //if ((badStringFlag == 0) && (checkForDoubleLetters(inputLine) == 1) && (countVowels(inputLine) >= 3))
+        if ((checkforDoublePairs(inputLine) == 1) && (checkForXyXFlag(inputLine) == 1))
         {
             std::cout << "...Found a nice string!";
             ++nice;
@@ -94,6 +118,20 @@ int main(){
 
 /* --- Day 5: Doesn't He Have Intern-Elves For This? ---
 
+    1) Remove old rules
+    2) New rules for Nice Strings:
+        1. Contains a pair of any two leters that appears twice, without overlapping xyxy (xy) or aabcdefgaa (aa), but NOT aaa (aa is overlapping itself)
+        2. Contains at least one letter that repeats with EXACTLY one letter between them xyx (xyx), abcdefeghi (efe), aaa (aaa).
+
+For example:
+
+    qjhvhtzxzqqjkmpb is nice(1. qj, 2. zxz)
+    xxyxx (xx, xyx - notice that the rules overlap)
+    uurcxstgmygtbstg is naughty (1. tg, no rule 2.)
+    ieodomkazucvgmuy is naughty no rule 1., 2. odo)
+
+How many strings are nice under these new rules?
+
     What I learned on this challenge:
         -- Unfortunately, Day 4 had proven to be too much for me, so I've moved on to Day 5 with the intention of circling back to Day 4 later when I'm more comfortable with it.
         -- I was also unsuccessful in finding a solution to this problem myself and more or less copied / derived my solution from this one here, on GitHub: https://github.com/WuSage3/AdventOfCode_2015/blob/master/Day5/Day5_Part1.cpp#L36
@@ -107,6 +145,8 @@ int main(){
         -- I leraned that I can write functions in the main cpp file. It's not preferred but for short exercises like this, it's not the end of the world.
 
         -- The strategy of using "Flags" to identify sub-problems and combine their results is something so silly and easy that I can't believe I didn't think of it myself! I'll be sure to use this approach in the future.
+
+        -- I used a branch on git to shelve in-progress work for the first time!
 
         The puzzle solution is 258.
 
