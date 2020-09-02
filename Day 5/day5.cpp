@@ -4,133 +4,49 @@
 #include <string>
 #include <vector>
 #include <regex>
+#include "Day5_funcs.h"
 
 using namespace std;
-
-int checkForDoubleLetters(string inputString) {
-    int doubleLetterFlag = 0;
-    string::size_type inputStringSize = inputString.size(); //what is this??
-
-    for(string::size_type i=0;i<(inputStringSize-1);++i) // ++i vs i++?
-    {
-        char currLetter = inputString[i];
-        char nextLetter = inputString[i+1];
-        if (currLetter == nextLetter) {
-            doubleLetterFlag = 1;
-            break;
-        }
-    }
-    return doubleLetterFlag;
-}
-
-int countVowels(string inputString){
-    int numVowels = 0;
-    string::size_type inputStringSize = inputString.size();
-
-    for(string::size_type i = 0; i < inputStringSize; ++i){
-        char letter = inputString[i];
-
-        switch(letter){
-            case 'a':
-                ++numVowels;
-                break;
-            case 'e':
-                ++numVowels;
-                break;
-            case 'i':
-                ++numVowels;
-                break;  
-            case 'o':
-                ++numVowels;
-                break;
-            case 'u':
-                ++numVowels;
-                break;
-            default:
-                break;
-        }
-    }
-    return numVowels;
-}
-
-int checkforDoublePairs(string inputString){
-    int doublePairsFlag = 0;
-
-    for (int i=0;i < inputString.length() - 3; ++i){
-        char currentLetter = inputString[i];
-        char nextLetter = inputString[i+1];
-
-        for (int j=i+2; j <  inputString.length()-1; ++j){
-            char secondLetter = inputString[j];
-            char nextSecondLetter = inputString[j+1];
-
-            if ((currentLetter == secondLetter) && (nextLetter == nextSecondLetter))
-            {
-                doublePairsFlag = 1;
-            }
-        }
-    }
-    return doublePairsFlag;
-
-}
-
-int checkForXyXFlag(string inputString){
-    int XyXFlag = 0;
-
-    //2. Contains at least one letter that repeats with EXACTLY one letter between them xyx (xyx), abcdefeghi (efe), aaa (aaa).
-    for (int i=0; i < inputString.size()-2; ++i)
-    {
-        char currentLetter = inputString[i];
-        char thirdLetter = inputString[i+2];
-        if (currentLetter == thirdLetter)
-        {
-            XyXFlag = 1;
-        }
-    }
-
-
-    return XyXFlag;
-}
 
 int main(){
     string inputLine;
     ifstream file("input.txt");
 
-    int nice = 0;
+    int nice1 = 0; //Part 1 counter
+    int nice2 = 0; //Part 2 counter
 
-
-/*     vector<regex> badStrings;
+    vector<regex> badStrings;
     badStrings.push_back(regex("^(.*)(ab)(.*)$")); //regex rules defined by the problem.
     badStrings.push_back(regex("^(.*)(cd)(.*)$")); //regex rules defined by the problem.
     badStrings.push_back(regex("^(.*)(pq)(.*)$")); //regex rules defined by the problem.
-    badStrings.push_back(regex("^(.*)(xy)(.*)$")); //regex rules defined by the problem. */
+    badStrings.push_back(regex("^(.*)(xy)(.*)$")); //regex rules defined by the problem.
 
     while (getline(file, inputLine))
     {
         std::cout << "Checking...: " << inputLine;
 
-/*         //check for bad strings first
-        int badStringFlag = 0;
-        for (vector<regex>::iterator it = badStrings.begin(); it != badStrings.end(); it++) {
-            regex badString = *it;
-            if (regex_match(inputLine, badString)) {
-                badStringFlag = 1;
-                break;
-            }
-        }
- */
-        //if ((badStringFlag == 0) && (checkForDoubleLetters(inputLine) == 1) && (countVowels(inputLine) >= 3))
-        if ((checkforDoublePairs(inputLine) == 1) && (checkForXyXFlag(inputLine) == 1))
+        if ((checkForNaughtyPairs(inputLine, badStrings) == 0) && (checkForDoubleLetters(inputLine) == 1) && (countVowels(inputLine) >= 3) && (checkforDoublePairs(inputLine) == 1) && (checkForXyXFlag(inputLine) == 1))
         {
-            std::cout << "...Found a nice string!";
-            ++nice;
+            ++nice1;
+            ++nice2;
+            std::cout << " ...Found a VERY Nice string.";
+        }
+        else if ((checkForNaughtyPairs(inputLine, badStrings) == 0) && (checkForDoubleLetters(inputLine) == 1) && (countVowels(inputLine) >= 3))
+        {
+            ++nice1;
+            std::cout << " ...Found a nice string.";
+        }
+        else if ((checkforDoublePairs(inputLine) == 1) && (checkForXyXFlag(inputLine) == 1))
+        {
+            ++nice2;
+            std::cout << " ...Found a nice string.";
         }
         else{
             std::cout << " ...Found a naughty string.";
         }
         std::cout << endl;
     }
-    std::cout << "Total nice strings: " << nice;
+    std::cout << "\nTotal nice1 strings: " << nice1 << "\nTotal nice2 strings: " << nice2;
 }
 
 /* --- Day 5: Doesn't He Have Intern-Elves For This? ---
@@ -152,6 +68,8 @@ int main(){
         -- I used a branch on git to shelve in-progress work for the first time!
 
         -- While I would have preferred to solve the second half of the problem using regex, because it's a lot more efficient than looping through each individual character, at some point I realized the investment to learn an entirely new way of parsing strings for a single problem was pretty great. The end user does not care what technology use to get there, so long as the final output is correct. That said, I want to learn the fundamentals of regex and will absolutely be coming back to this problem to implement my own solution, and clean this whole problem up.
+
+        -- "std::string_size" and "std::string_length" are the same thing. I didn't know that there were synonym functions in C++! Stylistically, it appears conventional to use size when operating on on containers such as Vectors, Map, etc., especially when working with Template classes and functions. Length is most often used when working upon objects that operate upon strings. Probably best to refer to whatever style guide is being used.
 
         The puzzle solution to part 1 is 258.
         The puzzle solution to part 2 is 53.
