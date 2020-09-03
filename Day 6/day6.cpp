@@ -68,7 +68,7 @@ int main(){
 -- I discovered you can create an array by just naming the int with 2 dimensions. With some testing, I was mistaken beliving I needed a third dimension to hold the bool/value of the light's state, but I don't. The array is the coordinate system, and the value of the int can hold it fine.
     -- I wonder if it'd be possible to instatiate other variables like this? Like an array of bools in the form of bool grid[100][100]??
 
--- Figuring out a method for farsing the string out was taking a long time and I realized regex might be up to the task here, especially because I want to practice it after giving up on Day 5.
+-- Figuring out a method for parsing the string out was taking a long time and I realized regex might be up to the task here, especially because I want to practice it after giving up on Day 5.
     -- It turns out regex MATCH is very, very different than regex SEARCH!
     -- Using the "smatch" template (the string implementation of the regex_match template (hence "smatch" for string match), I can collect "capture groups" and access them!
 
